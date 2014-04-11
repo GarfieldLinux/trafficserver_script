@@ -128,7 +128,7 @@ public:
 		fprintf(stdout, "Creating Regex: %s\n", full_regex_.c_str());
 		std::string::size_type last_slash = 0;
 		for (last_slash = full_regex_.size();
-				full_regex_[last_slash - 1] != '/'; --last_slash) {
+				full_regex_[last_slash] != '/'; --last_slash) {
 			fprintf(stdout, "Adding modifier: %c\n",
 					full_regex_[last_slash - 1]);
 			modifiers.push_back(full_regex_[last_slash]);

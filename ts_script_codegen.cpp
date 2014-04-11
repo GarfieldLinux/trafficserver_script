@@ -196,6 +196,32 @@ void CCompiledTarget::generate_for_pcre(ASTNode *node, ASTNode *cmp_node) {
 	*stream << indentation_chunk_ << indentation_chunk_ << "exit(1);" << endl
 			<< indentation_chunk_ << "}" << endl;
 
+	// Build the options field
+	std::ostringstream regex_options;
+	regex_options << "0";
+
+	for(int i = 0; i < regex_node->modifiers.size(); ++i) {
+		switch(regex_node->modifiers[i]) {
+		case 'i': {
+			regex_options << " | PCRE_CASELESS";
+			break;
+		}
+		case 's': {
+			regex_options << " | PCRE_DOTALL";
+			break;
+		}
+		case 'x': {
+			regex_options << " | PCRE_EXTENDED";
+			break;
+		}
+		case 'm': {
+			regex_options << " | PCRE_MULTILINE";
+			break;
+		}
+		default:
+			fprintf(stderr, "Unknown regex modifier: %c\n", regex_node->modifiers[i]);
+		}
+	}
 	// Now insert the regex code.
 	stream = hook_code_.top();
 	*stream << left_indentation_ << "int " << regex_ret_var_name.str()
@@ -204,7 +230,7 @@ void CCompiledTarget::generate_for_pcre(ASTNode *node, ASTNode *cmp_node) {
 			<< "[REGEX_VECTOR_SIZE];" << endl;
 	*stream << left_indentation_ << regex_ret_var_name.str() << " = pcre_exec("
 			<< regex_var_name.str() << ", " << regex_extra_var_name.str()
-			<< ", " << cmp_var << ", strlen(" << cmp_var << "), 0, 0, "
+			<< ", " << cmp_var << ", strlen(" << cmp_var << "), 0, " << regex_options.str() << ", "
 			<< regex_ret_vector_name.str() << ", REGEX_VECTOR_SIZE);" << endl;
 	*stream << left_indentation_ << "if (" << regex_ret_var_name.str()
 			<< " >= 0) {" << endl;

@@ -3,7 +3,7 @@ plugin "example_plugin";
 
 hook read_request_headers {
 	var p = client_request url[path];
-	if (p =~ /page_([0-9]+)\/country_([a-z]{2}).php/igm) {
+	if (p =~ /page_([0-9]+)\/country_([a-z]{2}).php/i) {
 		client_request url[path] = "/file_$1_$2.html";
 	} else {
 		if (client_request url[domain] == "www.linkedin.com") {
@@ -11,7 +11,7 @@ hook read_request_headers {
 				client_response header["Domain-Host-Match"] = "1";
 			}
 		} else {
-			if (client_request url[domain] =~ /([a-zA-Z]{2})\.[a-zA-Z]{6,8}\.com/i) {
+			if (client_request url[domain] =~ /([a-zA-Z]{2})\.[a-zA-Z]{6,8}\.com/) {
 				server_request url[query] = "?country=$1&domain=$2";
 			}
 		}

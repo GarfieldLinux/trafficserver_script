@@ -60,7 +60,7 @@ UNDERSCORE _
  	return STRING_LITERAL; 
 }
 
-(\/[^\*]([^\/]|\\\/)*\/[imsxagcdlup]*) {
+(\/[^\*]([^\/]|\\\/)*\/[imsx]*) {
  	DBG_PRINT(REGEX);
  	yylval.v_string=strdup(yytext); 
  	return REGEX; 
