@@ -1,0 +1,54 @@
+plugin "example_plugin";
+
+
+hook read_request_headers {
+	var p = client_request url[path];
+	if (p =~ /page_([0-9]+)\/country_([a-z]{2}).php/igm) {
+		client_request url[path] = "/file_$1_$2.html";
+	} else {
+		if (client_request url[domain] == "www.linkedin.com") {
+			hook send_response_headers {
+				client_response header["Domain-Host-Match"] = "1";
+			}
+		} else {
+			if (client_request url[domain] =~ /([a-zA-Z]{2})\.[a-zA-Z]{6,8}\.com/i) {
+				server_request url[query] = "?country=$1&domain=$2";
+			}
+		}
+	}
+}
+
+hook read_request_headers {
+	var s = client_request url[path];
+	if (s == "/bar") {
+  	  client_request header["bar-path"] = "1";
+	} else {
+	  if (s == "/baz") {
+	    client_request header["baz-path"] = "1";
+	  }
+	}
+}
+
+hook read_request_headers {
+    if (client_request url[path] == "/foo") {
+		client_request header["foo-path"] = "1";
+		client_request url[query] = "&foo=google.com";
+    }
+
+	if (client_request header["host"] == "foo.com") {
+		hook send_request_headers {
+			server_request header["x-example-foo-req"] = "1";
+		}
+	} else {
+		hook send_response_headers {
+			client_response header["x-example-foo"] = "nope";
+		}			
+	}
+}
+
+hook send_response_headers {
+	if(client_request header["foo"] == "yep") {
+		client_response header["x-example-yep"] = "1";
+	}	
+	client_response header["x-example-always"] = "1";
+}
