@@ -11,7 +11,9 @@
 class CompiledTarget {
 public:
 	virtual void generate(ASTNode *root) = 0;
-	virtual ~CompiledTarget() { };
+	virtual ~CompiledTarget() {
+	}
+
 };
 
 /*
@@ -48,13 +50,13 @@ private:
 	void generate_for_pcre(ASTNode *, ASTNode *);
 	void generate_for_hook_node(ASTNode *);
 	void generate_for_assignment_node(ASTNode *);
-	void generate_lvalue_assignment(ASTNode *, ASTNode *, std::ostringstream *assignment);
+	void generate_lvalue_assignment(ASTNode *, ASTNode *,
+			std::ostringstream *assignment);
 	void generate_for_if(ASTNode *, bool trailing_nl = true);
 	void generate_for_else(ASTNode *);
 	void generate_for_comparison(ASTNode *, bool trailing_nl = true);
 	void write_header_section();
 	void write_registration_code();
 };
-
 
 #endif

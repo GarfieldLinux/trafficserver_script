@@ -9,19 +9,16 @@
 
 extern "C" int yyparse(ASTNode **);
 
+extern "C" void yyerror(ASTNode **node, const char *s, ...) {
+	va_list ap;
+	va_start(ap, s);
 
-extern "C" void yyerror(ASTNode **node, const char *s, ...)
-{
-    va_list ap;
-    va_start(ap, s);
-
-    fprintf(stderr, "line %d: ", yylineno);
-    vfprintf(stderr, s, ap);
-    fprintf(stderr, "\n");
+	fprintf(stderr, "line %d: ", yylineno);
+	vfprintf(stderr, s, ap);
+	fprintf(stderr, "\n");
 }
 
-
-int main ( int argc, char **argv ) {
+int main(int argc, char **argv) {
 	ASTNode *root = NULL;
 	int ret_val = yyparse(&root);
 	fprintf(stdout, "-----------------\n");

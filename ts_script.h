@@ -17,36 +17,35 @@ public:
 	ASTNode *right_;
 	const char *printable_node_type_;
 public:
-	ASTNode(int type, ASTNode *left, ASTNode *right, const char *printable_node_type) :
-		type_(type), left_(left), right_(right), printable_node_type_(printable_node_type) {
-		fprintf(stdout, "Creating AST with type %s (%d)\n", printable_node_type_, type);
+	ASTNode(int type, ASTNode *left, ASTNode *right,
+			const char *printable_node_type) :
+			type_(type), left_(left), right_(right), printable_node_type_(
+					printable_node_type) {
+		fprintf(stdout, "Creating AST with type %s (%d)\n",
+				printable_node_type_, type);
 	}
 
-	virtual void PrintDotNull(std::string label, int nullcount, std::ofstream& dotfile)
-	{
-	  std::ostringstream ostr;
-	  ostr << nullcount;
-	  dotfile << "    " << label;
+	virtual void PrintDotNull(std::string label, int nullcount,
+			std::ofstream& dotfile) {
+		std::ostringstream ostr;
+		ostr << nullcount;
+		dotfile << "    " << label;
 	}
 
 	virtual void PrintDotAux(std::ofstream& dotfile) {
-	  static int nullcount = 0;
+		static int nullcount = 0;
 
-	  if(left())
-	  {
-	    dotfile << "    " << str() << " -> " << left()->str() << ";\n";
-	    left()->PrintDotAux(dotfile);
-	  }
-	  else
-	    PrintDotNull(str(), nullcount++, dotfile);
+		if (left()) {
+			dotfile << "    " << str() << " -> " << left()->str() << ";\n";
+			left()->PrintDotAux(dotfile);
+		} else
+			PrintDotNull(str(), nullcount++, dotfile);
 
-	  if (right())
-	  {
-	    dotfile << "    " << str() << " -> " << right()->str() << ";\n";
-	    right()->PrintDotAux(dotfile);
-	  }
-	  else
-	    PrintDotNull(str(), nullcount++, dotfile);
+		if (right()) {
+			dotfile << "    " << str() << " -> " << right()->str() << ";\n";
+			right()->PrintDotAux(dotfile);
+		} else
+			PrintDotNull(str(), nullcount++, dotfile);
 	}
 
 	virtual void printDot(std::ofstream& dotfile) {
@@ -79,14 +78,16 @@ public:
 		return type_;
 	}
 
-	virtual ~ASTNode() { }
+	virtual ~ASTNode() {
+	}
 };
 
 class StringLiteralNode: public ASTNode {
 public:
 	std::string value_;
 public:
-	StringLiteralNode(std::string value) : value_(value), ASTNode(STRING_LITERAL, NULL, NULL, "STRING_LITERAL") {
+	StringLiteralNode(std::string value) :
+			value_(value), ASTNode(STRING_LITERAL, NULL, NULL, "STRING_LITERAL") {
 		fprintf(stdout, "Creating String Literal: %s\n", value_.c_str());
 	}
 
@@ -104,11 +105,12 @@ class IdentifierNode: public ASTNode {
 public:
 	std::string value_;
 public:
-	IdentifierNode(std::string value) : value_(value), ASTNode(IDENTIFIER, NULL, NULL, "IDENTIFIER") {
+	IdentifierNode(std::string value) :
+			value_(value), ASTNode(IDENTIFIER, NULL, NULL, "IDENTIFIER") {
 		fprintf(stdout, "Creating Identifier: %s\n", value_.c_str());
 	}
 	std::string value() {
-			return value_;
+		return value_;
 	}
 	virtual std::string str() {
 		return std::string("\"IDENTIFIER=" + value() + "\"");
@@ -121,11 +123,14 @@ public:
 	std::string regex_str_;
 	std::vector<char> modifiers;
 public:
-	RegexNode(std::string full_regex) : full_regex_(full_regex), ASTNode(REGEX, NULL, NULL, "REGEX") {
+	RegexNode(std::string full_regex) :
+			full_regex_(full_regex), ASTNode(REGEX, NULL, NULL, "REGEX") {
 		fprintf(stdout, "Creating Regex: %s\n", full_regex_.c_str());
 		std::string::size_type last_slash = 0;
-		for (last_slash = full_regex_.size(); full_regex_[last_slash - 1] != '/'; --last_slash) {
-			fprintf(stdout, "Adding modifier: %c\n", full_regex_[last_slash - 1]);
+		for (last_slash = full_regex_.size();
+				full_regex_[last_slash - 1] != '/'; --last_slash) {
+			fprintf(stdout, "Adding modifier: %c\n",
+					full_regex_[last_slash - 1]);
 			modifiers.push_back(full_regex_[last_slash]);
 		}
 
@@ -137,7 +142,6 @@ public:
 			}
 		}
 
-
 	}
 
 	std::string regex_value() {
@@ -145,7 +149,7 @@ public:
 	}
 
 	std::string value() {
-			return full_regex_;
+		return full_regex_;
 	}
 	virtual std::string str() {
 		return std::string("\"REGEX=" + value() + "\"");
