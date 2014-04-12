@@ -3,6 +3,8 @@ plugin "example_plugin";
 
 hook read_request_headers {
 	var p = client_request url[path];
+	var k = "blah";
+	client_request header[k] = "foo";
 	if (p =~ /page_([0-9]+)\/country_([a-z]{2}).php/i) {
 		client_request url[path] = "/file_$1_$2.html";
 	} else {

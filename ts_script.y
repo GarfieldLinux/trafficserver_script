@@ -151,6 +151,7 @@ header_property
 			$$ = New_AstNode(HEADER, New_StringLiteral($3), NULL); 
 			free($3);
 		}
+	| HEADER OPEN_BRACKET identifier CLOSE_BRACKET { $$ = New_AstNode(HEADER, $3, NULL); }
 	;
 
 url_property

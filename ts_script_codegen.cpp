@@ -336,7 +336,7 @@ void CCompiledTarget::generate_for_assignment_node(ASTNode *node) {
     ASSERT_NODE_TYPE(node->left()->left(), IDENTIFIER);
     *stream << left_indentation_ << "char *"
         << build_var_name(node->left()->left()) << " = "
-        << rvalue_assignment.str() << endl;
+        << rvalue_assignment.str() << ";" << endl;
   } else {
     assert(!"unknown lvalue!");
   }
@@ -372,9 +372,15 @@ void CCompiledTarget::generate_lvalue_assignment(ASTNode *node,
   std::ostringstream *stream = hook_code_.top();
 
   if (node->right()->type() == HEADER) {
-    ASSERT_NODE_TYPE(node->right()->left(), STRING_LITERAL);
-    std::string header_name = create_global(
-        static_cast<StringLiteralNode*>(node->right()->left())->value());
+    std::string header_name;
+
+    if (node->right()->left()->type() == STRING_LITERAL) {
+      header_name = create_global(
+          static_cast<StringLiteralNode*>(node->right()->left())->value());
+    } else if (node->right()->left()->type() == IDENTIFIER) {
+        header_name = build_var_name(node->right()->left());
+    }
+
     if (assignment_node->type() == EQUAL) {
       action = "set_header";
     } else if (assignment_node->type() == PLUS_EQUAL) {
