@@ -135,7 +135,7 @@ public:
 
     for (std::string::size_type i = 0; i != full_regex_.size(); ++i) {
       if (full_regex_[i] == '/') {
-        regex_str_ = full_regex_.substr(i + 1, last_slash - i - 2);
+        regex_str_ = full_regex_.substr(i + 1, last_slash - i - 1);
         fprintf(stdout, "regex_str=%s\n", regex_str_.c_str());
         break;
       }
